@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>評估結果</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            margin-top: 50px;
+            text-align: center;
+        }
+        .result {
+            margin-top: 30px;
+        }
+        .advice {
+            margin-top: 20px;
+        }
+        .restart-btn {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>您的評估結果</h2>
+        <div class="result" id="result"></div>
+        <div class="advice" id="advice"></div>
+        <button class="btn btn-primary restart-btn" onclick="restart()">重新評估</button>
+    </div>
+
+    <script>
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            let regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        function displayResult(score) {
+            let resultText = "";
+            let adviceText = "";
+
+            if(score <= 14) { // 7-14分
+                resultText = "您的工作行為較為健康，沒有顯著的工作成癮傾向。";
+                adviceText = "請繼續保持良好的工作與生活平衡，關注身心健康。";
+            }
+            else if(score <= 21) { // 15-21分
+                resultText = "您可能有一些工作成癮的傾向，建議注意工作與生活的平衡。";
+                adviceText = "試著設定工作時間限制，並安排更多的休閒活動以放鬆身心。";
+            }
+            else { // 22-28分
+                resultText = "您可能存在明顯的工作成癮傾向，建議尋求專業的幫助。";
+                adviceText = "考慮諮詢心理專家，並積極尋找改善工作與生活平衡的方法。";
+            }
+
+            document.getElementById('result').innerHTML = `<h3>總分：${score} 分</h3><p>${resultText}</p>`;
+            document.getElementById('advice').innerHTML = `<p>${adviceText}</p>`;
+        }
+
+        function restart() {
+            window.location.href = "index.html";
+        }
+
+        window.onload = function() {
+            let score = parseInt(getParameterByName('score'));
+            if(isNaN(score)) {
+                document.getElementById('result').innerHTML = "<p>無法獲取評估結果。</p>";
+                return;
+            }
+            displayResult(score);
+        }
+    </script>
+</body>
+</html>
